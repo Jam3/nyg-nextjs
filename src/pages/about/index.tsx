@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
+import { NextPage } from 'next';
 
 import styles from '../index.module.scss';
 
 import Nav from '../../components/Nav/Nav';
 
 import { withRedux } from '../../redux/withRedux';
+import { State } from '../../redux';
 
-function About() {
-  const appLoaded = useSelector(state => state.app.loaded);
+const About: NextPage = function() {
+  const appLoaded = useSelector((state: State) => state.app.loaded);
 
   return (
     <section className="About">
@@ -25,6 +27,6 @@ function About() {
       </div>
     </section>
   );
-}
+};
 
-export default withRedux(About);
+export default withRedux(memo(About));

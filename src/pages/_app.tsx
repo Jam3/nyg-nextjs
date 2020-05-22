@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import { AppProps } from 'next/app';
 import 'normalize.css';
 import 'default-passive-events';
 
@@ -12,7 +13,7 @@ import RotateScreen from '../components/RotateScreen/RotateScreen';
 import detect, { isBrowser } from '../utils/detect';
 
 // This default export is required in a new `pages/_app.js` file.
-function App({ Component, pageProps }) {
+function App({ Component, pageProps }: AppProps) {
   const [isSupported, setIsSupported] = useState(true);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ function App({ Component, pageProps }) {
         <link rel="shortcut icon" href="/favicons/favicon.ico" />
         <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
         {/* Share meta tags */}
-        <meta property="og:locale" content="en_US" />>
+        <meta property="og:locale" content="en_US" />
         <meta property="og:title" content="Default title" />
         <meta property="og:description" content="Default title" />
         <meta property="og:type" content="website" />
