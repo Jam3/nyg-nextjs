@@ -1,38 +1,47 @@
-- type: parallel
+- name: develop
+  type: serial
+  tag: develop
   steps:
+  - name: integration
+    type: parallel
+    steps:
     - name: lint
       service: frontend-dev
       command: sh .codeship/linters.sh
-
-- type: serial
-  name: develop
-  tag: develop
-  steps:
-    - service: frontend-dev
-      name: artifact
+    - name: sast
+      service: njsscan-dev
+      command: -w /usr/src/app
+    - name: build
+      service: frontend-dev
       command: sh .codeship/artifact.sh
-    - service: awsdeployment-dev
-      name: deploy
-      command: sh ./usr/src/app/.codeship/deploy.sh
+  - name: deployment
+    service: awsdeployment-dev
+    command: sh ./usr/src/app/.codeship/deploy.sh
 
-- type: serial
-  name: staging
+- name: staging
+  type: serial
   tag: staging
   steps:
-    - service: frontend-stage
-      name: artifact
+  - name: integration
+    type: parallel
+    steps:
+    - name: lint
+      service: frontend-stage
+      command: sh .codeship/linters.sh
+    - name: sast
+      service: njsscan-stage
+      command: -w /usr/src/app
+    - name: build
+      service: frontend-stage
       command: sh .codeship/artifact.sh
-    - service: awsdeployment-stage
-      name: deploy
-      command: sh ./usr/src/app/.codeship/deploy.sh
+  - name: deployment
+    service: awsdeployment-stage
+    command: sh ./usr/src/app/.codeship/deploy.sh
 
-- type: serial
-  name: production
-  tag: '^(master|main)$'
+- name: production
+  type: manual
+  tag: staging
   steps:
-    - service: frontend-prod
-      name: artifact
-      command: sh .codeship/artifact.sh
-    - service: awsdeployment-prod
-      name: deploy
-      command: sh ./usr/src/app/.codeship/deploy.sh
+  - name: deployment
+    service: awsdeployment-prod
+    command: sh ./usr/src/app/.codeship/deploy.sh
